@@ -39,8 +39,14 @@
                     <td>@sim.EnergyGenerated</td>
                     <td>@sim.CostPerKWh €</td>
                     <td>@sim.PricePerKWh €</td>
-                    <td>@sim.TotalCost €</td>
-                    <td>@sim.TotalPrice €</td>
+                    <td>@(sim.EnergyGenerated * sim.CostPerKWh) €</td>
+                    <td>@(sim.EnergyGenerated * sim.PricePerKWh) €</td>
+                    
+                    <td>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@sim.Id">
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
