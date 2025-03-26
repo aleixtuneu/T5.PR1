@@ -44,6 +44,11 @@
 				<td>@waterConsumption.EconomicActivities</td>
 				<td>@waterConsumption.TotalWaterConsumption</td>
 				<td>@waterConsumption.DomesticConsumptionPerCapita</td>
+				<td>
+					<form method="post" asp-page-handler="Delete" asp-route-id="@waterConsumption.Id">
+						<button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+					</form>
+				</td>
 			</tr>
 		}
 	</tbody>

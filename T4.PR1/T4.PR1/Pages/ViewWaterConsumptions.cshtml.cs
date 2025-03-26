@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using T4.PR1.Data;
@@ -21,16 +22,31 @@ namespace T4.PR1.Pages
 
 		public async Task OnGetAsync()
 		{
+			WaterConsumptions = await _context.WaterConsumptions.ToListAsync();
+		}
+
+		public async Task<IActionResult> OnPostDeleteAsync(int id)
+		{
 			try
 			{
-				WaterConsumptions = await _context.WaterConsumptions.ToListAsync();
+				var waterConsumptionToDelete = await _context.WaterConsumptions.FindAsync(id);
+
+				if (waterConsumptionToDelete == null)
+				{
+					return NotFound();
+				}
+
+				_context.WaterConsumptions.Remove(waterConsumptionToDelete);
+				await _context.SaveChangesAsync();
+
+				return RedirectToPage();
 			}
 			catch (Exception ex)
 			{
-				FileErrorMessage = "Error al carreegar les dades del consum d'aigua: " + ex.Message;
-
-				// Registrar error amb un logger
+				// Log de l'error
+				FileErrorMessage = "Error al eliminar el consum d'aigua: " + ex.Message;
+				return Page();
 			}
 		}
-    }
+	}
 }

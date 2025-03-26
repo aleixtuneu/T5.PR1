@@ -23,14 +23,30 @@ namespace T4.PR1.Pages
 
         public async Task OnGetAsync()
         {
+            EnergyIndicators = await _context.EnergyIndicators.ToListAsync();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
             try
             {
-                EnergyIndicators = await _context.EnergyIndicators.ToListAsync();
+                var energyIndicatorToDelete = await _context.EnergyIndicators.FindAsync(id);
+
+                if (energyIndicatorToDelete == null)
+                {
+                    return NotFound();
+                }
+
+                _context.EnergyIndicators.Remove(energyIndicatorToDelete);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage();
             }
             catch (Exception ex)
             {
-                FileErrorMessage = "Error al carregar els indicadors energètics: " + ex.Message;
-                // Registrar l'error amb un logger
+                // Log 
+                FileErrorMessage = "Error al eliminar l'indicador energètic: " + ex.Message;
+                return Page();
             }
         }
     }
