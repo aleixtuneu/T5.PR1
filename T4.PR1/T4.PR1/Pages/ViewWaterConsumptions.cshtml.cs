@@ -7,25 +7,46 @@ using T4.PR1.Model;
 
 namespace T4.PR1.Pages
 {
+    /// <summary>
+    /// Page model for displaying and managing water consumptions.
+    /// </summary>
     public class ViewWaterConsumptionsModel : PageModel
     {
 		private readonly EcoEnergyContext _context;
 
-		public ViewWaterConsumptionsModel(EcoEnergyContext context)
+        /// <summary>
+        /// Constructor for the ViewWaterConsumptionsModel class.
+        /// </summary>
+        /// <param name="context">Data context.</param>
+        public ViewWaterConsumptionsModel(EcoEnergyContext context)
 		{
 			_context = context;
 		}
 
-		public List<WaterConsumption> WaterConsumptions { get; set; } = new List<WaterConsumption>();
+        /// <summary>
+        /// List of water consumptions to display.
+        /// </summary
+        public List<WaterConsumption> WaterConsumptions { get; set; } = new List<WaterConsumption>();
 
-		public string FileErrorMessage { get; set; }
+        /// <summary>
+        /// Error message related to file operations or other errors.
+        /// </summary>
+        public string FileErrorMessage { get; set; }
 
-		public async Task OnGetAsync()
+        /// <summary>
+        /// Handler for the GET request, retrieves the list of water consumptions from the database.
+        /// </summary>
+        public async Task OnGetAsync()
 		{
 			WaterConsumptions = await _context.WaterConsumptions.ToListAsync();
 		}
 
-		public async Task<IActionResult> OnPostDeleteAsync(int id)
+        /// <summary>
+        /// Handler for the POST request to delete a water consumption entry.
+        /// </summary>
+        /// <param name="id">ID of the water consumption entry to delete.</param>
+        /// <returns>IActionResult to redirect to the page or show an error.</returns>
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
 		{
 			try
 			{
@@ -43,8 +64,8 @@ namespace T4.PR1.Pages
 			}
 			catch (Exception ex)
 			{
-				// Log de l'error
-				FileErrorMessage = "Error al eliminar el consum d'aigua: " + ex.Message;
+				// Error message
+				FileErrorMessage = "Error a l'eliminar el consum d'aigua: " + ex.Message;
 				return Page();
 			}
 		}

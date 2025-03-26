@@ -3,20 +3,32 @@ using T4.PR1.Model;
 
 namespace T4.PR1.Data
 {
+    /// <summary>
+    /// Data context for the EcoEnergy application.
+    /// Manages access to data for energy simulations, water consumption, and energy indicators.
+    /// </summary>
     public class EcoEnergyContext : DbContext
     {
+        /// <summary>
+        /// Constructor that receives the context configuration options.
+        /// </summary>
+        /// <param name="options">Context configuration options.</param>
         public EcoEnergyContext(DbContextOptions<EcoEnergyContext> options) : base(options) { }
 
+        /// <summary>
+        /// Represents the table of energy simulations, water consmptions, and energy indicators in the database.
+        /// </summary>
         public DbSet<EnergySimulation> Simulations { get; set; }
         public DbSet<WaterConsumption> WaterConsumptions { get; set; }
         public DbSet<EnergyIndicator> EnergyIndicators { get; set; }
 
+        /// <summary>
+        /// Configures the database model, defining relationships and seed data.
+        /// </summary>
+        /// <param name="modelBuilder">Model builder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configurar relacions
-
-            // Configurar el seed de dades
-
+            // Configure seed data (initial data insertion)
             modelBuilder.Entity<EnergySimulation>().HasData(
                 new EnergySimulation { Id = 1, SystemType = "Solar", InputValue = 5, Ratio = 2, EnergyGenerated = 10, CostPerKWh = 0.1m, PricePerKWh = 0.2m, SimulationDate = new DateTime(2024, 01, 01, 12, 00, 00) }
             );
@@ -29,7 +41,7 @@ namespace T4.PR1.Data
                 new EnergyIndicator { Id = 1, Date = "01/2023", PBEE_Hydroelectric = 100, PBEE_Coal = 50, PBEE_NaturalGas = 75, PBEE_FuelOil = 25, PBEE_CombinedCycle = 60, PBEE_Nuclear = 80, CDEEBC_GrossProduction = 150, CDEEBC_AuxiliaryConsumption = 10, CDEEBC_NetProduction = 140, CDEEBC_PumpConsumption = 5, CDEEBC_AvailableProduction = 135, CDEEBC_TotalSalesCentralGrid = 120, CDEEBC_InterchangeBalance = 5, CDEEBC_ElectricityDemand = 130, CDEEBC_TotalRegulatedMarket = 70, CDEEBC_TotalLiberalizedMarket = 60, FEE_Industry = 40, FEE_Tertiary = 30, FEE_Domestic = 20, FEE_Primary = 10, FEE_Energy = 5, FEEI_PublicWorksConsumption = 8, FEEI_SteelFoundry = 7, FEEI_Metallurgy = 6, FEEI_GlassIndustry = 5, FEEI_CementLimePlaster = 4, FEEI_OtherConstructionMaterials = 3, FEEI_ChemicalPetrochemical = 2, FEEI_TransportConstruction = 1, FEEI_OtherMetalTransformation = 9, FEEI_FoodBeverageTobacco = 8, FEEI_TextileLeatherFootwear = 7, FEEI_PaperPulpCardboard = 6, FEEI_OtherIndustries = 5, DGGN_FrontierEnagas = 4, DGGN_GNLDistribution = 3, DGGN_NaturalGasConsumption = 2, CCAC_AutoGasoline = 10, CCAC_DieselA = 8 }
             );
 
-            // EnergySimulation
+            // Configure the decimal data type for EnergySimulation properties
             modelBuilder.Entity<EnergySimulation>()
                 .Property(e => e.CostPerKWh)
                 .HasColumnType("decimal(18, 2)");
@@ -50,12 +62,12 @@ namespace T4.PR1.Data
                 .Property(e => e.Ratio)
                 .HasColumnType("decimal(18, 2)");
 
-            // WaterConsumption
+            // Configure the decimal data type for WaterConsumption properties
             modelBuilder.Entity<WaterConsumption>()
                 .Property(e => e.DomesticConsumptionPerCapita)
                 .HasColumnType("decimal(18, 2)");
 
-            // EnergyIndicator
+            // Configure the decimal data type for EnergyIndicator properties
             modelBuilder.Entity<EnergyIndicator>()
         .Property(e => e.CCAC_AutoGasoline)
         .HasColumnType("decimal(18, 2)");
