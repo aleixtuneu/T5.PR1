@@ -4,6 +4,9 @@ namespace T4.PR1.Model
 {
     public class EnergyIndicator
     {
+        [Key]
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Aquest camp és obligatori")]
         [RegularExpression(@"^(0[1-9]|1[0-2])\/\d{4}$", ErrorMessage = "El format de la data ha de ser MM/YYYY")]
         public string Date { get; set; }

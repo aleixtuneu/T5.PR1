@@ -4,6 +4,9 @@ namespace T4.PR1.Model
 {
     public class EnergySimulation
     {
+        [Key]
+        public int Id { get; set; }
+
         public DateTime SimulationDate { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "El tipus de sistema és obligatori.")]
