@@ -2,21 +2,31 @@ using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Globalization;
+using T4.PR1.Data;
 using T4.PR1.Model;
 
 namespace T4.PR1.Pages
 {
     public class AddSimulationModel : PageModel
     {
+        private readonly EcoEnergyContext _context;
+
+        public AddSimulationModel(EcoEnergyContext context)
+        {
+            _context = context;
+        }
+
         [BindProperty]
         public EnergySimulation NewSimulation { get; set; }
 
         public string ErrorMessage;
-        public void OnGet()
+
+        public IActionResult OnGet()
         {
+            return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -26,29 +36,33 @@ namespace T4.PR1.Pages
 
             try
             {
-                string filePath = @"ModelData\simulacions_energia.csv";
-                bool fileExists = System.IO.File.Exists(filePath);
+                // Calcular energia generada abans d'inserir a la base de dades
+                NewSimulation.EnergyGenerated = CalculateEnergy(NewSimulation);
 
-                using (var writer = new StreamWriter(filePath, append: true))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                {
-                    if (!fileExists)
-                    {
-                        csv.WriteHeader<EnergySimulation>();
-                        csv.NextRecord();
-                    }
-
-                    csv.WriteRecord(NewSimulation);
-                    csv.NextRecord();
-                }
+                _context.Simulations.Add(NewSimulation);
+                await _context.SaveChangesAsync();
 
                 return RedirectToPage("ViewSimulations");
             }
-            catch
+            catch (Exception ex)
             {
+                // Log the exception
                 ErrorMessage = "Error en desar la simulació.";
                 return Page();
             }
+        }
+
+        private decimal CalculateEnergy(EnergySimulation simulation)
+        {
+            AEnergySystem system = simulation.SystemType switch
+            {
+                "Solar" => new SolarSystem(simulation.Ratio),
+                "Wind" => new WindSystem(simulation.Ratio),
+                "Hydraulic" => new HydraulicSystem(simulation.Ratio),
+                _ => throw new ArgumentException("Tipus de sistema invàlid.")
+            };
+
+            return system.CalculateEnergy(simulation.InputValue);
         }
     }
 }
